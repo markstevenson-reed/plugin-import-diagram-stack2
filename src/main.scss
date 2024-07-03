@@ -3,4 +3,16 @@ main {
     align-items: center;
     justify-content: center;
     height: 100%;
+    padding: 20px;
+
+    .main-inner {
+        textarea {
+        width: 100%;
+        }
+
+        img {
+            margin-top: 10px;
+            width: 100%;
+        }
+    }
 }
