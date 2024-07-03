@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms'
 import { bootstrapApplication } from '@angular/platform-browser'
 import 'zone.js'
 
-const defaultRawText: string = `
+const rawTextDefault: string = `
   Targets
     Occurrences of 'compile project(':' in Project
 Found Occurrences  (268 usages found)
@@ -29,6 +29,18 @@ Found Occurrences  (268 usages found)
                     94 compile project(':XmsSecurity')
                     95 compile project(':XmsLookup')
   `
+  const umlTextDefault: string = `[XmsWebapp]<-[XmsOrders]
+  [XmsOrders]<-[XmsFulfilment]
+  [XmsOrders]<-[XmsConfig]
+  [XmsCore]<-[XmsRoles]
+  [XmsLookup]<-[XmsCommon]
+  [XmsRoles]<-[XmsLookup]
+  [XmsRoles]<-[XmsSecurity]
+  [XmsFulfilment]<-[XmsCore]
+  [XmsConfig]<-[XmsCommonConfig]
+  [XmsConfig]<-[XmsCore]`
+
+  const diagramDefault: string = '[Customer]<->[Address]->[office]->[test]'
 
 @Component({
   selector: 'app-root',
@@ -43,18 +55,10 @@ Found Occurrences  (268 usages found)
 export class App {
   projectName: string = 'xms-platform-g3'
   exclusionLine: string = 'Occurrence in Gradle build script'
-  rawText: WritableSignal<string> = signal(defaultRawText)
-  umlText: WritableSignal<string> = signal(`[XmsWebapp]<-[XmsOrders]
-  [XmsOrders]<-[XmsFulfilment]
-  [XmsOrders]<-[XmsConfig]
-  [XmsCore]<-[XmsRoles]
-  [XmsLookup]<-[XmsCommon]
-  [XmsRoles]<-[XmsLookup]
-  [XmsRoles]<-[XmsSecurity]
-  [XmsFulfilment]<-[XmsCore]
-  [XmsConfig]<-[XmsCommonConfig]
-  [XmsConfig]<-[XmsCore]`)
-  diagram: WritableSignal<string> = signal('[Customer]<->[Address]->[office]->[test]')
+  rawText: WritableSignal<string> = signal(rawTextDefault)
+  umlText: WritableSignal<string> = signal(umlTextDefault)
+  diagram: WritableSignal<string> = signal(diagramDefault)
+
   errors: WritableSignal<string[]> = signal([])
 
   clearRaw() {
@@ -76,7 +80,10 @@ export class App {
   }
 
   reset() {
-
+    this.rawText.set(rawTextDefault)
+    this.umlText.set(umlTextDefault)
+    this.diagram.set(diagramDefault)
+    this.errors.set([])
   }
 
   private cleanMe(input: string, lastPlugin: string): string {
