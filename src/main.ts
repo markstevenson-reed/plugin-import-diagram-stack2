@@ -6,10 +6,11 @@ import 'zone.js';
   selector: 'app-root',
   standalone: true,
   template: `
-    <h1>Hello from {{ name }}!</h1>
+    <h1>Hello world test from {{ name }}!</h1>
     <a target="_blank" href="https://angular.dev/overview">
       Learn more about Angular
     </a>
+    <img src="http://yuml.me/diagram/scruffy/class/[Customer]->[Address]" >
   `,
 })
 export class App {
