@@ -48,7 +48,18 @@ export class App {
   }
 
   private process() {
-    this.errors.set(['oopsie1', 'oopsie2'])
+    let txt: string = this.mainRawText()
+    this.errors.set([])
+
+    // do stuff
+    // e.g. update txt with regex
+    // e.g. set errors
+
+    // this.errors.set(['oopsie1'])
+
+    if (!this.errors().length) {
+      this.diagram.set(txt)
+    }
   }
 }
 
