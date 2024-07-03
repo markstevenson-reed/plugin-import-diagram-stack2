@@ -3,20 +3,24 @@
 
     <label>Raw</label>
     <div>
-      <textarea [(ngModel)]="mainRawText"></textarea>
+      <textarea [(ngModel)]="mainRawText" spellcheck="false"></textarea>
       <div class="buttons">
         <button (click)="clearMain()">clear</button>
         <button (click)="submitMain()">submit</button>
       </div>
     </div>
 
+    <div class="gap1">&nbsp;</div>
+
     <div>
       <img [src]="'http://yuml.me/diagram/scruffy/class/' + diagram()">
     </div>
 
+    <div class="gap2">&nbsp;</div>
+
     <label>UML</label>
     <div>
-      <textarea [(ngModel)]="testRawText"></textarea>
+      <textarea [(ngModel)]="testRawText" spellcheck="false"></textarea>
       <div class="buttons">
         <button (click)="clearTest()">clear</button>
         <button (click)="submitTest()">submit</button>

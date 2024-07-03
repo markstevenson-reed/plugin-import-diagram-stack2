@@ -55,7 +55,7 @@ export class App {
     // e.g. update txt with regex
     // e.g. set errors
 
-    // this.errors.set(['oopsie1'])
+    this.errors.set(['oopsie1', 'oopsie2'])
 
     if (!this.errors().length) {
       this.diagram.set(txt)
