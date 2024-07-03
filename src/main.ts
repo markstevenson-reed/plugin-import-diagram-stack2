@@ -15,8 +15,8 @@ import 'zone.js'
   styleUrl: './main.scss'
 })
 export class App {
-  mainRawText: WritableSignal<string> = signal('')
-  testRawText: WritableSignal<string> = signal(`[XmsWebapp]<-[XmsOrders]
+  rawText: WritableSignal<string> = signal('')
+  umlText: WritableSignal<string> = signal(`[XmsWebapp]<-[XmsOrders]
   [XmsOrders]<-[XmsFulfilment]
   [XmsOrders]<-[XmsConfig]
   [XmsCore]<-[XmsRoles]
@@ -29,26 +29,26 @@ export class App {
   diagram: WritableSignal<string> = signal('[Customer]<->[Address]->[office]->[test]')
   errors: WritableSignal<string[]> = signal([])
 
-  clearMain() {
-    this.mainRawText.set('')
+  clearRaw() {
+    this.rawText.set('')
   }
 
-  submitMain() {
+  submitRaw() {
     this.process()
   }
 
-  clearTest() {
-    this.testRawText.set('')
+  clearUml() {
+    this.umlText.set('')
   }
 
-  submitTest() {
-    let txt: string = this.testRawText()
+  submitUml() {
+    let txt: string = this.umlText()
     txt = txt.replaceAll('\n',', ')
     this.diagram.set(txt)
   }
 
   private process() {
-    let txt: string = this.mainRawText()
+    let txt: string = this.rawText()
     this.errors.set([])
 
     // do stuff
