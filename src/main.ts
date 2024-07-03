@@ -17,13 +17,18 @@ import 'zone.js'
 export class App {
   rawText: WritableSignal<string> = signal('')
   diagram: WritableSignal<string> = signal('[Customer]<->[Address]->[office]->[test]')
+  errors: WritableSignal<string[]> = signal([])
 
   clear() {
-    alert('clear')
+    this.rawText.set('')
   }
 
   submit() {
-    alert('submit')
+    this.process()
+  }
+
+  private process() {
+    this.errors.set(['oopsie1', 'oopsie2'])
   }
 }
 
