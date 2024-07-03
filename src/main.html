@@ -1,7 +1,11 @@
 <main>
   <div class="main-inner">
     <div>
-      <textarea></textarea>
+      <textarea [(ngModel)]="rawText"></textarea>
+      <div class="buttons">
+        <button (click)="clear()">clear</button>
+        <button (click)="submit()">submit</button>
+      </div>
     </div>
     <div>
       <img [src]="'http://yuml.me/diagram/scruffy/class/' + diagram()">

@@ -10,6 +10,16 @@ main {
             width: 100%;
         }
 
+        .buttons {
+            text-align: right;
+
+            button {
+                padding: 5px 10px;
+                margin-left: 10px;
+                font-size: 13px;
+            }
+        }
+
         img {
             margin-top: 10px;
             width: 100%;
