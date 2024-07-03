@@ -34,10 +34,23 @@ main {
             text-align: right;
 
             button {
-                padding: 5px 10px;
-                margin-left: 10px;
+                border: none;
+                background-color: burlywood;
+                color: #FFF;
+                border-radius: 3px;
+                cursor: pointer;
                 font-size: 13px;
+                font-weight: bold;
+                padding: 5px 10px;
+                margin-top: 3px;
+                margin-left: 10px;
+                min-width: 80px;
+                box-shadow: 1px 1px 2px #aaa;
             }
+            
+            button:hover {
+                background-color: coral;
+            }            
         }
 
         img {
