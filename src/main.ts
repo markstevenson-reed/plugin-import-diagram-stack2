@@ -1,4 +1,4 @@
-import { Component } from '@angular/core'
+import { Component, signal, WritableSignal } from '@angular/core'
 import { bootstrapApplication } from '@angular/platform-browser'
 import 'zone.js'
 
@@ -9,7 +9,7 @@ import 'zone.js'
   styleUrl: './main.scss'
 })
 export class App {
-  diagram = '[Customer]<->[Address]->[office]->[test]'
+  diagram: WritableSignal<string> = signal('[Customer]<->[Address]->[office]->[test]')
 }
 
 bootstrapApplication(App)
