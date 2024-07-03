@@ -1,16 +1,29 @@
 <main>
   <div class="main-inner">
+
+    <label>Raw</label>
     <div>
-      <textarea [(ngModel)]="rawText"></textarea>
+      <textarea [(ngModel)]="mainRawText"></textarea>
       <div class="buttons">
-        <button (click)="clear()">clear</button>
-        <button (click)="submit()">submit</button>
+        <button (click)="clearMain()">clear</button>
+        <button (click)="submitMain()">submit</button>
       </div>
     </div>
+
     <div>
       <img [src]="'http://yuml.me/diagram/scruffy/class/' + diagram()">
     </div>
+
+    <label>UML</label>
+    <div>
+      <textarea [(ngModel)]="testRawText"></textarea>
+      <div class="buttons">
+        <button (click)="clearTest()">clear</button>
+        <button (click)="submitTest()">submit</button>
+      </div>
+    </div>
   </div>
+  
 </main>
 
 @if (errors().length) {
