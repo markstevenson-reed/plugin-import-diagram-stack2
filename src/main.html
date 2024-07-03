@@ -1,23 +1,19 @@
 <main>
   <div class="main-inner">
 
+    <div class="idiot">Import Diagram I/O Tool (IDIOT)</div>
+
     <label>Raw</label>
     <div>
       <textarea [(ngModel)]="rawText" spellcheck="false"></textarea>
       <div class="buttons">
         <button (click)="reset()">reset</button>
         <button (click)="clearRaw()">clear</button>
-        <button (click)="submitRaw()">submit</button>
+        <button (click)="submitRaw()">format</button>
       </div>
     </div>
 
     <div class="gap1">&nbsp;</div>
-
-    <div>
-      <img [src]="'http://yuml.me/diagram/scruffy/class/' + diagram()" alt="&nbsp;&nbsp;Oopsie! No Diagram">
-    </div>
-
-    <div class="gap2">&nbsp;</div>
 
     <label>UML</label>
     <div>
@@ -25,11 +21,16 @@
       <div class="buttons">
         <button (click)="reset()">reset</button>
         <button (click)="clearUml()">clear</button>
-        <button (click)="submitUml()">submit</button>
+        <button (click)="submitUml()">draw</button>
       </div>
     </div>
-  </div>
-  
+
+    <div class="gap2">&nbsp;</div>
+
+    <div>
+      <img [src]="'http://yuml.me/diagram/scruffy/class/' + diagram()" alt="&nbsp;&nbsp;Oopsie! No Diagram">
+    </div>
+  </div>  
 </main>
 
 @if (errors().length) {
