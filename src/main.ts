@@ -78,30 +78,43 @@ Found Occurrences  (268 usages found)
     let exclusionLine: string = this.exclusionLine
     let txtArr: string[] = txt.split('\n')
     let found: boolean = false
-    let umlArr: string[] = [];
+    let umlArr: string[] = []
+    let lastPlugin: string  = ''
 
-    function cleanMe(input: string): string {
+    function cleanMe(input: string, lastPlugin: string): string {
       input = input.replace(/        xms-platform-g3\..*/gi, '')
       input = input.replace(/                    \d{2,3} compile project/gi, '')
       input = input.replace(/                build.gradle  .*/gi, '')
       input = input.replace(/  \(\d{1,2} usage.* found\)/gi, ']')
       input = input.replace(/            /gi, '[')
-      input = input.replace(/\(':/gi, '[todo]<-[')
+      input = input.replace(/\(':/gi, lastPlugin+'<-[')
       input = input.replace(/'\)/gi, ']')
       return input
     }
 
+    function rowHasArrow(input: string): boolean {
+      return input.includes('<-')
+    }
+
     this.errors.set([])
 
-    txtArr.forEach(function(value){
+    txtArr.forEach(function(row){
     
       //if line has exclusionLine start from here    
       if(found){
-        umlArr.push(cleanMe(value))
+        row = cleanMe(row,lastPlugin)
+        if(row){
+          //IF row does not have arrow THEN set last plugin name
+          if(!rowHasArrow(row)){
+            lastPlugin = row
+          } else {
+            umlArr.push(row)
+          }
+        }
       }
 
       //Check for exlcusion line
-      found = found ? true : value.includes(exclusionLine)
+      found = found ? true : row.includes(exclusionLine)
     })
 
     this.umlText.set(umlArr.join('\n'))
