@@ -38,7 +38,7 @@ export class App {
   }
 
   clearTest() {
-    this.mainRawText.set('')
+    this.testRawText.set('')
   }
 
   submitTest() {
