@@ -4,20 +4,7 @@ import { FormsModule } from '@angular/forms'
 import { bootstrapApplication } from '@angular/platform-browser'
 import 'zone.js'
 
-@Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule
-  ],
-  templateUrl: './main.html',
-  styleUrl: './main.scss'
-})
-export class App {
-  projectName: string = 'xms-platform-g3'
-  exclusionLine: string = 'Occurrence in Gradle build script'
-  rawText: WritableSignal<string> = signal(`
+const defaultRawText: string = `
   Targets
     Occurrences of 'compile project(':' in Project
 Found Occurrences  (268 usages found)
@@ -41,7 +28,22 @@ Found Occurrences  (268 usages found)
                     93 compile project(':XmsCommonConfig')
                     94 compile project(':XmsSecurity')
                     95 compile project(':XmsLookup')
-  `)
+  `
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule
+  ],
+  templateUrl: './main.html',
+  styleUrl: './main.scss'
+})
+export class App {
+  projectName: string = 'xms-platform-g3'
+  exclusionLine: string = 'Occurrence in Gradle build script'
+  rawText: WritableSignal<string> = signal(defaultRawText)
   umlText: WritableSignal<string> = signal(`[XmsWebapp]<-[XmsOrders]
   [XmsOrders]<-[XmsFulfilment]
   [XmsOrders]<-[XmsConfig]
@@ -73,7 +75,27 @@ Found Occurrences  (268 usages found)
     this.diagram.set(txt)
   }
 
+  reset() {
+
+  }
+
+  private cleanMe(input: string, lastPlugin: string): string {
+    input = input.replace(/        xms-platform-g3\..*/gi, '')
+    input = input.replace(/                    \d{2,3} compile project/gi, '')
+    input = input.replace(/                build.gradle  .*/gi, '')
+    input = input.replace(/  \(\d{1,2} usage.* found\)/gi, ']')
+    input = input.replace(/            /gi, '[')
+    input = input.replace(/\(':/gi, lastPlugin+'<-[')
+    input = input.replace(/'\)/gi, ']')
+    return input
+  }
+
+  private rowHasArrow(input: string): boolean {
+    return input.includes('<-')
+  }
+
   private process() {
+    //test
     let txt: string = this.rawText()
     let exclusionLine: string = this.exclusionLine
     let txtArr: string[] = txt.split('\n')
@@ -81,55 +103,36 @@ Found Occurrences  (268 usages found)
     let umlArr: string[] = []
     let lastPlugin: string  = ''
 
-    function cleanMe(input: string, lastPlugin: string): string {
-      input = input.replace(/        xms-platform-g3\..*/gi, '')
-      input = input.replace(/                    \d{2,3} compile project/gi, '')
-      input = input.replace(/                build.gradle  .*/gi, '')
-      input = input.replace(/  \(\d{1,2} usage.* found\)/gi, ']')
-      input = input.replace(/            /gi, '[')
-      input = input.replace(/\(':/gi, lastPlugin+'<-[')
-      input = input.replace(/'\)/gi, ']')
-      return input
-    }
-
-    function rowHasArrow(input: string): boolean {
-      return input.includes('<-')
-    }
-
     this.errors.set([])
 
-    txtArr.forEach(function(row){
+    txtArr.forEach((row) => {
     
       //if line has exclusionLine start from here    
       if(found){
-        row = cleanMe(row,lastPlugin)
+        row = this.cleanMe(row,lastPlugin)
         if(row){
           //IF row does not have arrow THEN set last plugin name
-          if(!rowHasArrow(row)){
+          if(!this.rowHasArrow(row)){
             lastPlugin = row
           } else {
             umlArr.push(row)
           }
         }
       }
-
       //Check for exlcusion line
       found = found ? true : row.includes(exclusionLine)
     })
 
-    this.umlText.set(umlArr.join('\n'))
-
-
-
     // do stuff
     // e.g. update txt with regex
     // e.g. set errors
-    
-    this.errors.set(['oopsie1', 'oopsie2'])
+    if(!found){
+      this.errors.set(['unable to find removal line'])
+    }
 
     if (!this.errors().length) {
       //set the text back
-      this.diagram.set(txt)
+      this.umlText.set(umlArr.join('\n'))
     }
   }
 }

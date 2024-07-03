@@ -5,6 +5,7 @@
     <div>
       <textarea [(ngModel)]="rawText" spellcheck="false"></textarea>
       <div class="buttons">
+        <button (click)="reset()">reset</button>
         <button (click)="clearRaw()">clear</button>
         <button (click)="submitRaw()">submit</button>
       </div>
@@ -22,6 +23,7 @@
     <div>
       <textarea [(ngModel)]="umlText" spellcheck="false"></textarea>
       <div class="buttons">
+        <button (click)="reset()">reset</button>
         <button (click)="clearUml()">clear</button>
         <button (click)="submitUml()">submit</button>
       </div>
