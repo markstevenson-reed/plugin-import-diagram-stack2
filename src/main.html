@@ -1,0 +1,42 @@
+<main>
+  <div class="main-inner">
+
+    <div class="idiot">Import Diagram I/O Tool (IDIOT)</div>
+
+    <label>Raw</label>
+    <div>
+      <textarea [(ngModel)]="rawText" spellcheck="false"></textarea>
+      <div class="buttons">
+        <button (click)="reset()">reset</button>
+        <button (click)="clearRaw()">clear</button>
+        <button class="bigger" (click)="submitRaw()">format</button>
+      </div>
+    </div>
+
+    <div class="gap1">&nbsp;</div>
+
+    <label>UML</label>
+    <div>
+      <textarea [(ngModel)]="umlText" spellcheck="false"></textarea>
+      <div class="buttons">
+        <button (click)="reset()">reset</button>
+        <button (click)="clearUml()">clear</button>
+        <button class="bigger" (click)="submitUml()">draw</button>
+      </div>
+    </div>
+
+    <div class="gap2">&nbsp;</div>
+
+    <div>
+      <img [src]="'http://yuml.me/diagram/scruffy/class/' + diagram()" alt="&nbsp;&nbsp;Oopsie! No Diagram">
+    </div>
+  </div>  
+</main>
+
+@if (errors().length) {
+  <div class="errors">
+    @for (error of errors(); track $index) {
+      <div class="error">{{ error }}</div>
+    }
+  </div>
+}

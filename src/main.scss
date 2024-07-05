@@ -1,0 +1,100 @@
+main {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    height: 100%;
+    padding: 20px;
+
+    .idiot {
+        font-size: 20px;
+        font-weight: bold;
+        color: #0047AB;
+        margin-bottom: 15px;
+    }
+
+    label {
+        color: #555;
+        font-weight: bold;
+    }
+
+    .gap1 {
+        height: 15px;
+    }
+
+    .gap2 {
+        height: 15px;
+    }
+
+    .main-inner {
+        textarea {
+            width: 100%;
+            resize: vertical;
+            height: calc(10lh + 12px);
+            border: 1px solid #ccc;
+            outline: none;
+            color: #555;
+            padding: 5px;
+            background-color: #eee;
+        }
+
+        .buttons {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            width: 100%;
+
+            button {
+                border: none;
+                background-color: #6F8FAF;
+                color: #FFF;
+                border-radius: 3px;
+                cursor: pointer;
+                font-size: 13px;
+                font-weight: bold;
+                padding: 5px 10px;
+                margin-top: 3px;
+                margin-left: 10px;
+                min-width: 90px;
+                box-shadow: 1px 1px 2px #aaa;
+
+                &.bigger {
+                    font-size: 17px;
+                }
+            }
+            
+            button:hover {
+                background-color: #0047AB;
+            }            
+        }
+
+        img {
+            margin-top: 10px;
+            width: 100%;
+            max-height: 300px;
+            background-color: #eee;
+            padding: 10px;
+            border-radius: 5px;
+            color: #333;
+            cursor: pointer;
+            transition: transform 2s ease;
+
+            &:hover {
+                filter: invert(100%);
+                transform: scale(1.1);
+            }
+        }
+    }
+}
+
+.errors {
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    background-color: #C00;
+    color: #FFF;
+
+    .error {
+        padding: 5px 10px;
+        border-top: 1px solid #fff;
+    }
+}
