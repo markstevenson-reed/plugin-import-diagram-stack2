@@ -86,49 +86,32 @@ export class App {
     this.typeScriptText.set('')
   }
 
+  //TODO rename
   formatTypeScriptToUml() {
+    const dependenciesByPlugin = this.createDependenciesByPlugin( this.umlText() )
+    let umlCleanArr: string[] = []
+
+    dependenciesByPlugin.forEach((dependencies,plugin) => {
+      dependencies.forEach((dependency)=>{
+        if(!this.isDependancyRedundant(dependenciesByPlugin, plugin, dependency)){
+          umlCleanArr.push( `[${plugin}] <- [${dependency}]`)
+        }
+      })
+    })
+
+    this.typeScriptText()
+    this.umlText.set(umlCleanArr.join('\n'))
   }
 
   formatUmlToTypeScript() {
     const dependenciesByPlugin = this.createDependenciesByPlugin( this.umlText() )
-    console.log( dependenciesByPlugin )
     let umlCleanArr: string[] = []
-
-    // Function to check if a dependency is redundant
-    function isDependancyRedundant(dependencies: Map<string, Set<string>>, start: string, target: string): boolean {
-      const visited = new Set<string>();
-
-      //Depth-First Search
-      function dfs(node: string): boolean {
-          if (node === target) return true;
-          if (visited.has(node)) return false;
-          visited.add(node);
-
-          const neighbors = dependencies.get(node);
-          if (neighbors) {
-              for (const neighbor of neighbors) {
-                  if (dfs(neighbor)) return true;
-              }
-          }
-          return false;
-      }
-
-      const neighbors = dependencies.get(start);
-      if (neighbors) {
-          for (const neighbor of neighbors) {
-              if (neighbor !== target && dfs(neighbor)) {
-                  return true;
-              }
-          }
-      }
-      return false;
-    }
 
     dependenciesByPlugin.forEach((dependencies,plugin) => {
       umlCleanArr.push( `'${plugin}': {`)
 
       dependencies.forEach((dependency)=>{
-        umlCleanArr.push(`\t'${dependency}', ${isDependancyRedundant(dependenciesByPlugin, plugin, dependency) ? '// Remove this':''}`)
+        umlCleanArr.push(`\t'${dependency}', ${this.isDependancyRedundant(dependenciesByPlugin, plugin, dependency) ? '// Remove this':''}`)
       })
       umlCleanArr.push( `},`)
       
@@ -136,7 +119,35 @@ export class App {
     this.typeScriptText.set(umlCleanArr.join('\n'))
   }
 
+  // Function to check if a dependency is redundant
+  private isDependancyRedundant(dependencies: Map<string, Set<string>>, start: string, target: string): boolean {
+    const visited = new Set<string>();
 
+    //Depth-First Search
+    function dfs(node: string): boolean {
+        if (node === target) return true;
+        if (visited.has(node)) return false;
+        visited.add(node);
+
+        const neighbors = dependencies.get(node);
+        if (neighbors) {
+            for (const neighbor of neighbors) {
+                if (dfs(neighbor)) return true;
+            }
+        }
+        return false;
+    }
+
+    const neighbors = dependencies.get(start);
+    if (neighbors) {
+        for (const neighbor of neighbors) {
+            if (neighbor !== target && dfs(neighbor)) {
+                return true;
+            }
+        }
+    }
+    return false;
+  }
 
   // {'XmsWebapp' => Set(1), 'XmsOrders' => Set(2), 'XmsFulfilment' => Set(1), 'XmsConfig' => Set(3), 'XmsCore' => Set(1), …}
   private createDependenciesByPlugin(umlText: string): Map<string, Set<string>>{

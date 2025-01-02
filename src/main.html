@@ -3,15 +3,11 @@
 
     <div class="idiot">Import Diagram I/O Tool (IDIOT)</div>
 
-    <div class="buttons">
-      <button (click)="reset()">reset</button>
-    </div>
-
     <label>Raw</label>
     <div>
       <textarea [(ngModel)]="rawText" spellcheck="false"></textarea>
       <div class="buttons">
-        
+        <button (click)="reset()">reset</button>
         <button (click)="clearRaw()">clear</button>
         <button class="bigger" (click)="formatRawToUML()">format</button>
       </div>
@@ -23,8 +19,10 @@
     <div>
       <textarea [(ngModel)]="umlText" spellcheck="false"></textarea>
       <div class="buttons">
+        <button (click)="reset()">reset</button>
         <button (click)="clearUml()">clear</button>
         <button class="bigger" (click)="formatUmlToTypeScript()">format</button>
+        <button class="bigger" (click)="formatTypeScriptToUml()">clean</button>
         <button class="bigger" (click)="submitUml()">draw</button>
       </div>
     </div>
@@ -35,8 +33,8 @@
     <div>
       <textarea [(ngModel)]="typeScriptText" spellcheck="false"></textarea>
       <div class="buttons">
+        <button (click)="reset()">reset</button>
         <button (click)="clearTypeScript()">clear</button>
-        <button class="bigger" (click)="formatTypeScriptToUml()">format</button>
       </div>
     </div>
 
