@@ -64,7 +64,7 @@ export class App {
   exclusionLine: string = 'Occurrence in Gradle build script'
   rawText: WritableSignal<string> = signal(rawTextDefault)
   umlText: WritableSignal<string> = signal(umlTextDefault)
-  javaScriptText: WritableSignal<string> = signal('')
+  typeScriptText: WritableSignal<string> = signal('')
   diagram: WritableSignal<string> = signal(diagramDefault)
 
   errors: WritableSignal<string[]> = signal([])
@@ -74,7 +74,7 @@ export class App {
   }
 
   //Format the raw contents into UML
-  formatRaw() {
+  formatRawToUML() {
     this.process()
   }
 
@@ -82,26 +82,100 @@ export class App {
     this.umlText.set('')
   }
 
-  cleanUml() {
-    // Define the dependencies
-    const dependencies: { [key: string]: string[] } = {
-      A: ['B', 'C'],
-      B: ['C'],
-      C: []
+  clearTypeScript() {
+    this.typeScriptText.set('')
+  }
+
+  formatTypeScriptToUml() {
+  }
+
+  formatUmlToTypeScript() {
+    const dependenciesByPlugin = this.createDependenciesByPlugin( this.umlText() )
+    console.log( dependenciesByPlugin )
+    let umlCleanArr: string[] = []
+
+    // Function to check if a dependency is redundant
+    function isDependancyRedundant(dependencies: Map<string, Set<string>>, start: string, target: string): boolean {
+      const visited = new Set<string>();
+
+      //Depth-First Search
+      function dfs(node: string): boolean {
+          if (node === target) return true;
+          if (visited.has(node)) return false;
+          visited.add(node);
+
+          const neighbors = dependencies.get(node);
+          if (neighbors) {
+              for (const neighbor of neighbors) {
+                  if (dfs(neighbor)) return true;
+              }
+          }
+          return false;
+      }
+
+      const neighbors = dependencies.get(start);
+      if (neighbors) {
+          for (const neighbor of neighbors) {
+              if (neighbor !== target && dfs(neighbor)) {
+                  return true;
+              }
+          }
+      }
+      return false;
     }
 
-    const start = 'A'
-    const target = 'C'
-    const redundant = this.isRedundant(dependencies, start, target)
-    // Regular expression to match content inside square brackets
-    const regex = /\[([^\]]+)\]/g;
+    dependenciesByPlugin.forEach((dependencies,plugin) => {
+      umlCleanArr.push( `'${plugin}': {`)
 
-    const matches = [];
-    let match;
-    while ((match = regex.exec(this.umlText())) !== null) {
-        matches.push(match[1]);
+      dependencies.forEach((dependency)=>{
+        umlCleanArr.push(`\t'${dependency}', ${isDependancyRedundant(dependenciesByPlugin, plugin, dependency) ? '// Remove this':''}`)
+      })
+      umlCleanArr.push( `},`)
+      
+    })
+    this.typeScriptText.set(umlCleanArr.join('\n'))
+  }
+
+
+
+  // {'XmsWebapp' => Set(1), 'XmsOrders' => Set(2), 'XmsFulfilment' => Set(1), 'XmsConfig' => Set(3), 'XmsCore' => Set(1), …}
+  private createDependenciesByPlugin(umlText: string): Map<string, Set<string>>{
+    const umlArr: string[] = umlText.split('\n')
+    const dependenciesByPlugin = new Map<string, Set<string>>()
+
+    function addPluginAndDependancy(row: string){
+      // [XmsWebapp]<-[XmsOrders] => ['XmsWebapp', 'XmsOrders']
+      function getPluginAndDependancy(row: string): string[] {
+        // Regular expression to match content inside square brackets
+        const regex = /\[([^\]]+)\]/g;
+        const plugins = [];
+        let match;
+        while ((match = regex.exec(row)) !== null) {
+          plugins.push(match[1]);
+        }
+        return plugins
+      }
+
+      function getDependencies(plugin: string){
+        let dependencies = dependenciesByPlugin.get(plugin)
+        // Make plugin ref if not found
+        if(!dependencies){
+          dependencies = new Set<string>()
+          dependenciesByPlugin.set(plugin, dependencies)
+        }
+        return dependencies
+      }
+
+      const pluginAndDependancy: string[] = getPluginAndDependancy(row)
+      let dependencies = getDependencies(pluginAndDependancy[0])
+      dependencies.add(pluginAndDependancy[1])
+      getDependencies(pluginAndDependancy[1])
     }
-    this.javaScriptText.set(`Is [${start}] <- [${target}] redundant? ${redundant} ${matches}`)
+
+    umlArr.forEach((row) => {
+      addPluginAndDependancy(row)
+    })
+    return dependenciesByPlugin
   }
 
   submitUml() {
@@ -117,36 +191,13 @@ export class App {
     this.errors.set([])
   }
 
-  // Function to check if a dependency is redundant
-  private isRedundant(dependencies: { [key: string]: string[] }, start: string, target: string): boolean {
-    const visited = new Set<string>();
-
-    function dfs(node: string): boolean {
-        if (node === target) return true;
-        if (visited.has(node)) return false;
-        visited.add(node);
-
-        for (const neighbor of dependencies[node]) {
-            if (dfs(neighbor)) return true;
-        }
-        return false;
-    }
-
-    for (const neighbor of dependencies[start]) {
-        if (neighbor !== target && dfs(neighbor)) {
-            return true;
-        }
-    }
-    return false;
-  }
-
   private cleanMe(input: string, lastPlugin: string): string {
     input = input.replace(/        xms-platform-g3\..*/gi, '')
     input = input.replace(/                    \d{2,3} compile project/gi, '')
     input = input.replace(/                build.gradle  .*/gi, '')
     input = input.replace(/  \(\d{1,2} usage.* found\)/gi, ']')
     input = input.replace(/            /gi, '[')
-    input = input.replace(/\(':/gi, lastPlugin+'<-[')
+    input = input.replace(/\(':/gi, lastPlugin+'<-[') //Add the arrow
     input = input.replace(/'\)/gi, ']')
     return input
   }
@@ -155,6 +206,7 @@ export class App {
     return input.includes('<-')
   }
 
+  //Format the raw contents into UML
   private process() {
     //test
     let txt: string = this.rawText()

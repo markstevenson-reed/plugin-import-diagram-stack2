@@ -13,7 +13,7 @@
       <div class="buttons">
         
         <button (click)="clearRaw()">clear</button>
-        <button class="bigger" (click)="formatRaw()">format</button>
+        <button class="bigger" (click)="formatRawToUML()">format</button>
       </div>
     </div>
 
@@ -23,19 +23,20 @@
     <div>
       <textarea [(ngModel)]="umlText" spellcheck="false"></textarea>
       <div class="buttons">
-        <button (click)="reset()">reset</button>
         <button (click)="clearUml()">clear</button>
-        <button class="bigger" (click)="cleanUml()">clean</button>
+        <button class="bigger" (click)="formatUmlToTypeScript()">format</button>
         <button class="bigger" (click)="submitUml()">draw</button>
       </div>
     </div>
 
     <div class="gap1">&nbsp;</div>
 
-    <label>JavaScript</label>
+    <label>TypeScript</label>
     <div>
-      <textarea [(ngModel)]="javaScriptText" spellcheck="false"></textarea>
+      <textarea [(ngModel)]="typeScriptText" spellcheck="false"></textarea>
       <div class="buttons">
+        <button (click)="clearTypeScript()">clear</button>
+        <button class="bigger" (click)="formatTypeScriptToUml()">format</button>
       </div>
     </div>
 
