@@ -3,13 +3,17 @@
 
     <div class="idiot">Import Diagram I/O Tool (IDIOT)</div>
 
+    <div class="buttons">
+      <button (click)="reset()">reset</button>
+    </div>
+
     <label>Raw</label>
     <div>
       <textarea [(ngModel)]="rawText" spellcheck="false"></textarea>
       <div class="buttons">
-        <button (click)="reset()">reset</button>
+        
         <button (click)="clearRaw()">clear</button>
-        <button class="bigger" (click)="submitRaw()">format</button>
+        <button class="bigger" (click)="formatRaw()">format</button>
       </div>
     </div>
 
@@ -21,7 +25,17 @@
       <div class="buttons">
         <button (click)="reset()">reset</button>
         <button (click)="clearUml()">clear</button>
+        <button class="bigger" (click)="cleanUml()">clean</button>
         <button class="bigger" (click)="submitUml()">draw</button>
+      </div>
+    </div>
+
+    <div class="gap1">&nbsp;</div>
+
+    <label>JavaScript</label>
+    <div>
+      <textarea [(ngModel)]="javaScriptText" spellcheck="false"></textarea>
+      <div class="buttons">
       </div>
     </div>
 

@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms'
 import { bootstrapApplication } from '@angular/platform-browser'
 import 'zone.js'
 
+// Starting example of raw data
 const rawTextDefault: string = `
   Targets
     Occurrences of 'compile project(':' in Project
@@ -29,6 +30,7 @@ Found Occurrences  (268 usages found)
                     94 compile project(':XmsSecurity')
                     95 compile project(':XmsLookup')
   `
+  // Starting example of uml text data
   const umlTextDefault: string = `[XmsWebapp]<-[XmsOrders]
   [XmsOrders]<-[XmsFulfilment]
   [XmsOrders]<-[XmsConfig]
@@ -38,8 +40,12 @@ Found Occurrences  (268 usages found)
   [XmsRoles]<-[XmsSecurity]
   [XmsFulfilment]<-[XmsCore]
   [XmsConfig]<-[XmsCommonConfig]
+  [XmsConfig]<-[XmsRoles]
   [XmsConfig]<-[XmsCore]`
 
+  const javaScriptTextDefault: string = ``
+
+  // Diagram default design
   const diagramDefault: string = '[Customer]<->[Address]->[office]->[test]'
 
 @Component({
@@ -52,11 +58,13 @@ Found Occurrences  (268 usages found)
   templateUrl: './main.html',
   styleUrl: './main.scss'
 })
+
 export class App {
   projectName: string = 'xms-platform-g3'
   exclusionLine: string = 'Occurrence in Gradle build script'
   rawText: WritableSignal<string> = signal(rawTextDefault)
   umlText: WritableSignal<string> = signal(umlTextDefault)
+  javaScriptText: WritableSignal<string> = signal('')
   diagram: WritableSignal<string> = signal(diagramDefault)
 
   errors: WritableSignal<string[]> = signal([])
@@ -65,12 +73,35 @@ export class App {
     this.rawText.set('')
   }
 
-  submitRaw() {
+  //Format the raw contents into UML
+  formatRaw() {
     this.process()
   }
 
   clearUml() {
     this.umlText.set('')
+  }
+
+  cleanUml() {
+    // Define the dependencies
+    const dependencies: { [key: string]: string[] } = {
+      A: ['B', 'C'],
+      B: ['C'],
+      C: []
+    }
+
+    const start = 'A'
+    const target = 'C'
+    const redundant = this.isRedundant(dependencies, start, target)
+    // Regular expression to match content inside square brackets
+    const regex = /\[([^\]]+)\]/g;
+
+    const matches = [];
+    let match;
+    while ((match = regex.exec(this.umlText())) !== null) {
+        matches.push(match[1]);
+    }
+    this.javaScriptText.set(`Is [${start}] <- [${target}] redundant? ${redundant} ${matches}`)
   }
 
   submitUml() {
@@ -84,6 +115,29 @@ export class App {
     this.umlText.set(umlTextDefault)
     this.diagram.set(diagramDefault)
     this.errors.set([])
+  }
+
+  // Function to check if a dependency is redundant
+  private isRedundant(dependencies: { [key: string]: string[] }, start: string, target: string): boolean {
+    const visited = new Set<string>();
+
+    function dfs(node: string): boolean {
+        if (node === target) return true;
+        if (visited.has(node)) return false;
+        visited.add(node);
+
+        for (const neighbor of dependencies[node]) {
+            if (dfs(neighbor)) return true;
+        }
+        return false;
+    }
+
+    for (const neighbor of dependencies[start]) {
+        if (neighbor !== target && dfs(neighbor)) {
+            return true;
+        }
+    }
+    return false;
   }
 
   private cleanMe(input: string, lastPlugin: string): string {
