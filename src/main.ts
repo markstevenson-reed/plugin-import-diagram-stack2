@@ -3,9 +3,7 @@ import { Component, signal, WritableSignal } from '@angular/core'
 import { FormsModule } from '@angular/forms'
 import { bootstrapApplication } from '@angular/platform-browser'
 import 'zone.js'
-import { isDependancyRedundant } from './UmlFormatter'
-import { umlTextDefault } from './UmlFormatter'
-import { createDependenciesByPlugin } from './UmlFormatter'
+import { UmlFormatter } from './UmlFormatter'
 import { RawFormatter } from './RawFormatter'
 
 // Starting example of raw data
@@ -52,7 +50,7 @@ Found Occurrences  (268 usages found)
 
 export class App {
   rawText: WritableSignal<string> = signal(rawTextDefault)
-  umlText: WritableSignal<string> = signal(umlTextDefault)
+  umlText: WritableSignal<string> = signal(UmlFormatter.umlTextDefault)
   typeScriptText: WritableSignal<string> = signal('')
   diagram: WritableSignal<string> = signal(diagramDefault)
 
@@ -77,12 +75,12 @@ export class App {
 
   //TODO rename
   formatTypeScriptToUml() {
-    const dependenciesByPlugin = createDependenciesByPlugin( this.umlText() )
+    const dependenciesByPlugin = UmlFormatter.createDependenciesByPlugin( this.umlText() )
     let umlCleanArr: string[] = []
 
     dependenciesByPlugin.forEach((dependencies,plugin) => {
       dependencies.forEach((dependency)=>{
-        if(!isDependancyRedundant(dependenciesByPlugin, plugin, dependency)){
+        if(!UmlFormatter.isDependancyRedundant(dependenciesByPlugin, plugin, dependency)){
           umlCleanArr.push( `[${plugin}]<-[${dependency}]`)
         }
       })
@@ -93,14 +91,14 @@ export class App {
   }
 
   formatUmlToTypeScript() {
-    const dependenciesByPlugin = createDependenciesByPlugin( this.umlText() )
+    const dependenciesByPlugin = UmlFormatter.createDependenciesByPlugin( this.umlText() )
     let umlCleanArr: string[] = []
 
     dependenciesByPlugin.forEach((dependencies,plugin) => {
       umlCleanArr.push( `'${plugin}': {`)
 
       dependencies.forEach((dependency)=>{
-        umlCleanArr.push(`\t'${dependency}', ${isDependancyRedundant(dependenciesByPlugin, plugin, dependency) ? '// Remove this':''}`)
+        umlCleanArr.push(`\t'${dependency}', ${UmlFormatter.isDependancyRedundant(dependenciesByPlugin, plugin, dependency) ? '// Remove this':''}`)
       })
       umlCleanArr.push( `},`)
       
@@ -116,7 +114,7 @@ export class App {
 
   reset() {
     this.rawText.set(rawTextDefault)
-    this.umlText.set(umlTextDefault)
+    this.umlText.set(UmlFormatter.umlTextDefault)
     this.diagram.set(diagramDefault)
     this.errors.set([])
   }

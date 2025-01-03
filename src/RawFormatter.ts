@@ -8,20 +8,20 @@ export class RawFormatter {
   }
 
   private static replaceMultipleSpaces(input: string): string {
-    return input.replace(/\s{2,}/g, ' ');
+    return input.replace(/ {2,}/g, ' ');
   }
 
   private static cleanMe(input: string, lastPlugin: string): string {
-    //input = this.replaceMultipleSpaces(input)
+    input = this.replaceMultipleSpaces(input)
     let cleaned = input
-    .replace(/        '+this.PROJECT_NAME'+'\..*/gi, '') //Remove any lines like xms-platform-g3.XmsSomething  (4 usages found) 
-    .replace(/                    \d{2,3} compile project/gi, '') //89 compile project
-    .replace(/                build.gradle  .*/gi, '')
-    .replace(/  \(\d{1,2} usage.* found\)/gi, ']')
-    .replace(/            /gi, '[')
-    .replace(/\(':/gi, lastPlugin + this.ARROW + '[') //Add the arrow
+    //.replace(/ '+this.PROJECT_NAME'+'\..*/gi, '') //Remove any lines like xms-platform-g3.XmsSomething  (4 usages found) 
+    .replace(/ \d{2,3} compile project/gi, '') //89 compile project
+    .replace(/ build.gradle.*/gi, '')
+    .replace(/ \(\d{1,2} usage.* found\)/gi, ']')
+    .replace(/ /gi, '[')
+    .replace(/\(':/gi, lastPlugin + this.ARROW + '[') //Add the arrow when finds '(:'
     .replace(/'\)/gi, ']')
-    console.log(input, cleaned)
+    console.log("cleanMe('"+input+"', '"+lastPlugin+"') returns '"+cleaned+"'")
     return cleaned;
   }
 
