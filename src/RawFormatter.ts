@@ -15,11 +15,11 @@ export class RawFormatter {
     input = this.replaceMultipleSpaces(input)
     let cleaned = input
     //.replace(/ '+this.PROJECT_NAME'+'\..*/gi, '') //Remove any lines like xms-platform-g3.XmsSomething  (4 usages found) 
-    .replace(/ \d{2,3} compile project/gi, '') //89 compile project
     .replace(/ build.gradle.*/gi, '')
     .replace(/ \(\d{1,2} usage.* found\)/gi, ']')
+    //89 compile project
+    .replace(/ \d{2,3} compile project\(':/gi, lastPlugin + this.ARROW + '[') //Add the arrow when finds '(:'
     .replace(/ /gi, '[')
-    .replace(/\(':/gi, lastPlugin + this.ARROW + '[') //Add the arrow when finds '(:'
     .replace(/'\)/gi, ']')
     console.log("cleanMe('"+input+"', '"+lastPlugin+"') returns '"+cleaned+"'")
     return cleaned;
