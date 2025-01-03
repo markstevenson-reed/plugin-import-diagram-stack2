@@ -73,8 +73,7 @@ export class App {
     this.typeScriptText.set('')
   }
 
-  //TODO rename
-  formatTypeScriptToUml() {
+  cleanUml() {
     const dependenciesByPlugin = UmlFormatter.createDependenciesByPlugin( this.umlText() )
     let umlCleanArr: string[] = []
 
@@ -85,28 +84,27 @@ export class App {
         }
       })
     })
-
-    this.typeScriptText()
+    umlCleanArr.sort()
     this.umlText.set(umlCleanArr.join('\n'))
   }
 
   formatUmlToTypeScript() {
     const dependenciesByPlugin = UmlFormatter.createDependenciesByPlugin( this.umlText() )
-    let umlCleanArr: string[] = []
+    let typeScriptArr: string[] = []
 
     dependenciesByPlugin.forEach((dependencies,plugin) => {
-      umlCleanArr.push( `'${plugin}': {`)
+      typeScriptArr.push( `'${plugin}': {`)
 
       dependencies.forEach((dependency)=>{
-        umlCleanArr.push(`\t'${dependency}', ${UmlFormatter.isDependancyRedundant(dependenciesByPlugin, plugin, dependency) ? '// Remove this':''}`)
+        typeScriptArr.push(`\t'${dependency}', ${UmlFormatter.isDependancyRedundant(dependenciesByPlugin, plugin, dependency) ? '// Remove this':''}`)
       })
-      umlCleanArr.push( `},`)
+      typeScriptArr.push( `},`)
       
     })
-    this.typeScriptText.set(umlCleanArr.join('\n'))
+    this.typeScriptText.set(typeScriptArr.join('\n'))
   }
 
-  submitUml() {
+  drawUml() {
     let txt: string = this.umlText()
     txt = txt.replaceAll('\n',', ')
     this.diagram.set(txt)
